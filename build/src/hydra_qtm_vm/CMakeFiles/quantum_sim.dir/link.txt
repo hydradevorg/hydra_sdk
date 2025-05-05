@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libquantum_sim.a CMakeFiles/quantum_sim.dir/quantum_sim_stub.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libquantum_sim.a

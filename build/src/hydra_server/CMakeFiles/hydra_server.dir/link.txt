@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libhydra_server.a CMakeFiles/hydra_server.dir/api_server.cpp.o CMakeFiles/hydra_server.dir/api_example.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libhydra_server.a

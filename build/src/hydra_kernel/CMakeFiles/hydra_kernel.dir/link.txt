@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc ../../lib/libhydra_kernel.a CMakeFiles/hydra_kernel.dir/src/process.cpp.o CMakeFiles/hydra_kernel.dir/src/kernel.cpp.o CMakeFiles/hydra_kernel.dir/src/network.cpp.o CMakeFiles/hydra_kernel.dir/src/ipc.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib ../../lib/libhydra_kernel.a

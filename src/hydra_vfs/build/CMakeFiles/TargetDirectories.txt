@@ -1,0 +1,6 @@
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/hydra_vfs.dir
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/hydra_vfs_shared.dir
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/hydra_sks.dir
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/vfs_tests.dir
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/edit_cache.dir
+/Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,145 @@
+#pragma once
+/**
+ * @file falcon_signature.hpp
+ * @brief Falcon post-quantum digital signature algorithm
+ */
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+namespace hydra {
+namespace crypto {
+
+/**
+ * @brief FalconSignature digital signature algorithm
+ * 
+ * This class implements the Falcon digital signature algorithm,
+ * providing secure post-quantum signatures with small signature sizes.
+ * 
+ * Example usage:
+ * ```
+ * // Generate a key pair
+ * FalconSignature signer;
+ * signer.generate_key_pair();
+ * 
+ * // Sign a message
+ * std::string message = "Hello, post-quantum world!";
+ * auto signature = signer.sign_message(message);
+ * 
+ * // Verify the signature
+ * bool is_valid = signer.verify_signature(message, signature);
+ * ```
+ */
+class FalconSignature {
+public:
+    /**
+     * @brief Constructs a FalconSignature object
+     * @param degree The Falcon degree parameter (512 or 1024)
+     */
+    explicit FalconSignature(int degree = 512);
+    ~FalconSignature();
+
+    // Delete copy/move
+    FalconSignature(const FalconSignature&) = delete;
+    FalconSignature& operator=(const FalconSignature&) = delete;
+    FalconSignature(FalconSignature&&) = delete;
+    FalconSignature& operator=(FalconSignature&&) = delete;
+
+    /**
+     * Generate a new Falcon key pair
+     * @return A pair containing {public_key, private_key} as raw byte vectors
+     */
+    std::pair<std::vector<uint8_t>, std::vector<uint8_t>> generate_key_pair();
+    
+    /**
+     * @return The current public key
+     */
+    std::vector<uint8_t> get_public_key() const;
+    
+    /**
+     * @return The current private key
+     * @note Take care to protect this data
+     */
+    std::vector<uint8_t> get_private_key() const;
+
+    /**
+     * Sign a message using the private key
+     * 
+     * @param message The message to sign
+     * @return The signature as a byte vector
+     */
+    std::vector<uint8_t> sign_message(const std::vector<uint8_t>& message);
+    
+    /**
+     * Overload to sign a string message
+     */
+    std::vector<uint8_t> sign_message(const std::string& message);
+
+    /**
+     * Verify a signature using the public key
+     * 
+     * @param message The original message
+     * @param signature The signature to verify
+     * @return True if the signature is valid, false otherwise
+     */
+    bool verify_signature(const std::vector<uint8_t>& message, const std::vector<uint8_t>& signature);
+    
+    /**
+     * Overload to verify a string message
+     */
+    bool verify_signature(const std::string& message, const std::vector<uint8_t>& signature);
+
+    /**
+     * Set the public key from external data
+     * 
+     * @param key The public key as a byte vector
+     */
+    void set_public_key(const std::vector<uint8_t>& key);
+    
+    /**
+     * Set the private key from external data
+     * 
+     * @param key The private key as a byte vector
+     */
+    void set_private_key(const std::vector<uint8_t>& key);
+
+    /**
+     * @return Size in bytes of a public key
+     */
+    size_t get_public_key_size() const;
+    
+    /**
+     * @return Size in bytes of a private key
+     */
+    size_t get_private_key_size() const;
+    
+    /**
+     * @return Expected maximum size in bytes of a signature
+     */
+    size_t get_signature_size() const;
+    
+    /**
+     * @return Name of the algorithm (e.g., "Falcon-512")
+     */
+    std::string get_name() const;
+    
+    /**
+     * @return Security level in bits
+     */
+    int get_security_level() const;
+
+    /**
+     * Run a demonstration of Falcon operations
+     */
+    static void demo();
+
+private:
+    class Impl;
+    std::unique_ptr<Impl> impl_;
+};
+
+} // namespace crypto
+} // namespace hydra

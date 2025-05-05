@@ -1,0 +1,4 @@
+/Volumes/BIGCODE/hydra_sdk/examples/vfs_example/build/CMakeFiles/simple_example.dir
+/Volumes/BIGCODE/hydra_sdk/examples/vfs_example/build/CMakeFiles/secure_file_manager.dir
+/Volumes/BIGCODE/hydra_sdk/examples/vfs_example/build/CMakeFiles/edit_cache.dir
+/Volumes/BIGCODE/hydra_sdk/examples/vfs_example/build/CMakeFiles/rebuild_cache.dir

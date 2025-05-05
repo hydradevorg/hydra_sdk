@@ -1,0 +1,112 @@
+version: '1.0'
+
+container:
+  name: secure_application
+  path: ./secure_app.hcon
+
+security:
+  encryption: kyber_aes
+  security_level: standard
+  # key_file: ./secure_app.key  # Uncomment to use an existing key file
+
+isolation:
+  mode: partial  # none, partial, complete
+  ports:
+    - internal: 8080
+      external: 80
+      protocol: tcp
+      process: web_server
+      
+    - internal: 5432
+      external: 5432
+      protocol: tcp
+      process: database
+      
+    - internal: 8081
+      external: 8081
+      protocol: tcp
+      process: api_server
+
+resources:
+  max_memory: 2GB
+  max_cpu: 0.75  # 75% CPU limit
+  max_files: 10000
+  max_file_size: 100MB
+  max_storage: 10GB
+
+processes:
+  - name: web_server
+    command: /bin/web_server
+    args:
+      - --port=8080
+      - --workers=4
+    env:
+      PORT: 8080
+      DEBUG: "false"
+      CACHE_SIZE: 512MB
+    limits:
+      memory: 512MB
+      cpu: 0.2
+      threads: 8
+  
+  - name: database
+    command: /bin/db_server
+    args:
+      - --port=5432
+      - --data-dir=/data
+    env:
+      DB_PORT: 5432
+      DB_USER: app
+      DB_PASSWORD: ${DB_PASSWORD}  # Environment variable substitution
+    limits:
+      memory: 1GB
+      cpu: 0.3
+      storage: 5GB
+  
+  - name: api_server
+    command: /bin/api_server
+    args:
+      - --port=8081
+    env:
+      API_PORT: 8081
+      DB_CONNECTION: "postgresql://app@localhost:5432/appdb"
+    limits:
+      memory: 256MB
+      cpu: 0.1
+  
+  - name: worker
+    command: /bin/worker
+    count: 4  # Create 4 worker processes
+    env:
+      WORKER_MODE: background
+      QUEUE: tasks
+    limits:
+      memory: 128MB
+      cpu: 0.05
+      file_descriptors: 100
+
+mounts:
+  - source: ./app_data
+    target: /data
+    read_only: false
+    
+  - source: ./configs
+    target: /etc/app
+    read_only: true
+    
+  - source: ./logs
+    target: /var/log/app
+    read_only: false
+
+networks:
+  - name: app_network
+    subnet: 172.20.0.0/24
+    gateway: 172.20.0.1
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+
+volumes:
+  - name: db_data
+    target: /data/db
+    size: 5GB

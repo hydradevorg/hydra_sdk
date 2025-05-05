@@ -1,0 +1,12 @@
+[submodule "lib/eigen"]
+	path = lib/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+[submodule "lib/botan"]
+	path = lib/botan
+	url = https://github.com/randombit/botan.git
+[submodule "lib/gmp"]
+	path = lib/gmp
+	url = https://github.com/alisw/GMP.git
+[submodule "lib/blake3"]
+	path = lib/blake3
+	url = https://github.com/BLAKE3-team/BLAKE3.git

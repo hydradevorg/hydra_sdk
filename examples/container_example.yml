@@ -1,0 +1,39 @@
+# Hydra Container Configuration Example
+# This is an example configuration for a Hydra secure container
+
+version: '1.0'
+
+# Container configuration
+container:
+  name: secure_vault
+  path: ./secure_vault.hcon
+
+# Security configuration
+security:
+  # Encryption provider to use (options: aes256, kyber_aes)
+  encryption: kyber_aes
+  
+  # Security level (options: standard, hardware_backed)
+  security_level: standard
+  
+  # Uncomment to specify a password instead of generating a key
+  #password: your_password_here
+  
+  # Uncomment to specify a key file instead of password
+  #key_file: ./secure_vault.key
+
+# Resource limits
+resources:
+  max_storage: 1GB
+  max_files: 10000
+  max_file_size: 100MB
+
+# Mount points (directories to import into the container)
+mounts:
+  - source: ./data
+    target: /imported_data
+    read_only: false
+    
+  - source: ./configs
+    target: /configs
+    read_only: true

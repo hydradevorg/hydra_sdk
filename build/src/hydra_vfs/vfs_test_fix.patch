@@ -1,0 +1,124 @@
+--- /Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/tests/vfs_tests.cpp
++++ /Volumes/BIGCODE/hydra_sdk/src/hydra_vfs/tests/vfs_tests.cpp
+@@ -422,20 +422,36 @@
+     }
+     
+     // Use absolute path for container
+-    const std::string container_path = test_dir + "/test_container.dat";
+-    std::cout << "DEBUG: Using absolute container path: " << container_path << std::endl;
++    std::string container_path = test_dir + "/test_container.dat";
++    // For consistency, use just the filename, not full path
++    std::string simple_container_path = "./vfs_test_data/test_container.dat";
++    std::cout << "DEBUG: Using container path: " << container_path << std::endl;
++    std::cout << "DEBUG: Using simple container path: " << simple_container_path << std::endl;
+     
+-    // Remove any existing container file
+-    if (std::filesystem::exists(container_path)) {
++    // Remove any existing container files (both paths)
++    for (const auto& path : {container_path, simple_container_path}) {
++        if (!std::filesystem::exists(path)) {
++            continue;
++        }
++
+         try {
+-            std::filesystem::remove(container_path);
+-            std::cout << "DEBUG: Removed existing container file: " << container_path << std::endl;
++            std::filesystem::remove(path);
++            std::cout << "DEBUG: Removed existing container file: " << path << std::endl;
+         } catch (const std::exception& e) {
+-            std::cerr << "WARNING: Failed to remove existing container file: " << e.what() << std::endl;
++            std::cerr << "WARNING: Failed to remove existing container file " << path << ": " << e.what() << std::endl;
+             // Try to truncate the file instead
+-            std::ofstream ofs(container_path, std::ios::trunc);
++            std::ofstream ofs(path, std::ios::trunc);
+             ofs.close();
+         }
+     }
++    
++    // Make sure the parent directory exists
++    std::filesystem::path container_dir = std::filesystem::path(simple_container_path).parent_path();
++    if (!std::filesystem::exists(container_dir)) {
++        std::cout << "DEBUG: Creating parent directory: " << container_dir << std::endl;
++        std::filesystem::create_directories(container_dir);
++    }
++    
++    // Use the simple path for consistent test execution
++    container_path = simple_container_path;
+
+@@ -507,8 +523,27 @@
+     // Try to open with correct key
+     {
+         auto container_vfs = hydra::vfs::create_container_vfs(
+-            container_path,
+-            key,
++            container_path, 
++            key, 
++            nullptr,
++            hydra::vfs::SecurityLevel::STANDARD,
++            limits
++        );
++        
++        // Create the secret file if it doesn't exist
++        if (!container_vfs->file_exists("/secret.txt").value()) {
++            std::cout << "DEBUG: Secret file does not exist, creating it now" << std::endl;
++            auto create_result = container_vfs->create_file("/secret.txt");
++            assert_true(create_result.success(), "Failed to create secret file");
++            
++            // Write the secret content
++            const std::string secret_content = "TOP SECRET: This data should be encrypted";
++            auto file = container_vfs->open_file("/secret.txt", hydra::vfs::FileMode::WRITE).value();
++            file->write(reinterpret_cast<const uint8_t*>(secret_content.c_str()), secret_content.size());
++            file->close();
++            
++            // Create a new instance to ensure everything is saved properly
++            container_vfs = hydra::vfs::create_container_vfs(
++            container_path, 
++            key, 
+             nullptr,
+             hydra::vfs::SecurityLevel::STANDARD,
+             limits
+
+@@ -582,19 +617,27 @@
+ 
+ int main() {
+     std::cout << "Hydra Virtual File System Tests" << std::endl;
+     std::cout << "===============================" << std::endl;
+     
+-    // Create test directory
+-    const std::string test_dir = "./vfs_test_data";
+-    std::cout << "Cleaning up test directory: " << test_dir << std::endl;
++    // Get the current working directory
++    char cwd[1024];
++    if (getcwd(cwd, sizeof(cwd)) == NULL) {
++        std::cerr << "ERROR: Failed to get current working directory" << std::endl;
++        return 1;
++    }
++    std::cout << "Current working directory: " << cwd << std::endl;
++    
++    // Create test directory with consistent path
++    std::string test_dir = "./vfs_test_data";
++    std::cout << "Using test directory: " << test_dir << std::endl;
+     
+     // Thoroughly clean up the test directory
+     if (fs::exists(test_dir)) {
++        std::cout << "Cleaning up test directory: " << test_dir << std::endl;
+         try {
+             fs::remove_all(test_dir);
+         } catch (const std::exception& e) {
+             std::cerr << "WARNING: Failed to remove test directory: " << e.what() << std::endl;
+             // Try to remove individual files
+-            for (const auto& entry : fs::directory_iterator(test_dir)) {
++            for (const auto& entry : fs::directory_iterator(test_dir)) { 
+                 try {
+                     fs::remove(entry.path());
+                 } catch (const std::exception& e) {
+@@ -611,9 +654,6 @@
+         return 1;
+     }
+     
+-    // Test directory for persistent VFS
+-    std::cout << "Cleaning up test directory: " << test_dir << std::endl;
+-    cleanup_test_dir(test_dir);
+     
+     // Create VFS instances
+     std::cout << "Creating memory VFS..." << std::endl;

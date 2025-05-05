@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libhydra_crypto.a CMakeFiles/hydra_crypto.dir/kyber_kem.cpp.o CMakeFiles/hydra_crypto.dir/dilithium_signature.cpp.o CMakeFiles/hydra_crypto.dir/kyber_aes.cpp.o CMakeFiles/hydra_crypto.dir/falcon_signature.cpp.o CMakeFiles/hydra_crypto.dir/root_key_manager.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libhydra_crypto.a

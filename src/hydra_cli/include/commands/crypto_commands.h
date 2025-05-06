@@ -4,6 +4,7 @@
 #include <hydra_crypto/kyber_kem.hpp>
 #include <hydra_crypto/dilithium_signature.hpp>
 #include <hydra_crypto/falcon_signature.hpp>
+#include <hydra_address/address_generator.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -80,6 +81,25 @@ class KeyInfoCommand : public Command {
 public:
     int execute(const std::vector<std::string>& args) override;
     void print_help() const override;
+};
+
+// Command to generate and manage addresses
+class AddressCommand : public Command {
+public:
+    int execute(const std::vector<std::string>& args) override;
+    void print_help() const override;
+
+private:
+    // Methods for different address operations
+    int generate_standard_address(const std::vector<std::string>& args);
+    int generate_geo_address(const std::vector<std::string>& args);
+    int generate_quantum_address(const std::vector<std::string>& args);
+    int generate_compressed_address(const std::vector<std::string>& args);
+    int verify_address(const std::vector<std::string>& args);
+
+    // Helper methods
+    std::vector<uint8_t> load_public_key(const std::string& key_file);
+    hydra::address::AddressType parse_address_type(const std::string& type_str);
 };
 
 } // namespace crypto

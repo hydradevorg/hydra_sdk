@@ -25,7 +25,7 @@ if(TVC_SRC STREQUAL "")
 endif()
 
 add_library(hydra_compression_tvc SHARED ${TVC_SRC})
-target_include_directories(hydra_compression_tvc PUBLIC 
+target_include_directories(hydra_compression_tvc PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/hydra_compression
 )
@@ -42,11 +42,23 @@ if(OST_SRC STREQUAL "")
 endif()
 
 add_library(hydra_compression_ost SHARED ${OST_SRC})
-target_include_directories(hydra_compression_ost PUBLIC 
+target_include_directories(hydra_compression_ost PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/hydra_compression
 )
 target_compile_features(hydra_compression_ost PUBLIC cxx_std_20)
+
+# === COMBINED INTERFACE LIBRARY ===
+# Create an interface library that combines both TVC and OST
+add_library(hydra_compression INTERFACE)
+target_link_libraries(hydra_compression INTERFACE
+    hydra_compression_tvc
+    hydra_compression_ost
+)
+target_include_directories(hydra_compression INTERFACE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/hydra_compression
+)
 
 # === TESTING ===
 enable_testing()

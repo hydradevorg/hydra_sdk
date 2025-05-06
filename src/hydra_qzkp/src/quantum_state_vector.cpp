@@ -29,11 +29,11 @@ void QuantumStateVector::set_entanglement(double e) {
     entanglement_ = e;
 }
 
-double QuantumStateVector::coherence() {
+double QuantumStateVector::coherence() const {
     if (!coherence_) {
         double sum = std::accumulate(coordinates_.begin(), coordinates_.end(), 0.0,
             [](double acc, const Complex& c) { return acc + std::abs(c); });
-        *coherence_ = sum / coordinates_.size();
+        coherence_ = sum / coordinates_.size();
         cache_["coherence"] = *coherence_;
     }
     return *coherence_;
@@ -60,7 +60,14 @@ std::vector<uint8_t> QuantumStateVector::serialize() const {
     if (serialized_) return *serialized_;
 
     json j;
-    j["coordinates"] = coordinates_;
+
+    // Convert complex vector to JSON array of arrays
+    json coords_array = json::array();
+    for (const auto& c : coordinates_) {
+        coords_array.push_back({c.real(), c.imag()});
+    }
+    j["coordinates"] = coords_array;
+
     j["entanglement"] = entanglement_;
     j["coherence"] = coherence_.value_or(this->coherence());
     j["state_type"] = state_type_;

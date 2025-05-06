@@ -36,7 +36,7 @@ void ResultCache<Key, Value>::evict_oldest() {
     while (!access_queue_.empty() && cache_.size() >= maxsize_) {
         Key oldest = access_queue_.front();
         access_queue_.pop_front();
-        if (cache_.contains(oldest)) {
+        if (cache_.find(oldest) != cache_.end()) {
             cache_.erase(oldest);
             access_time_.erase(oldest);
         }

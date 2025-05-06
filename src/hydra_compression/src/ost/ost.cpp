@@ -1,4 +1,4 @@
-#include <hydra_compression/ost.h>
+#include <hydra_compression/ost/ost.hpp>
 #include <hydra_compression/huffman.hpp>
 #include <iostream>
 #include <algorithm>

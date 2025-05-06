@@ -53,8 +53,8 @@ set(HYDRA_CRYPTO_SOURCES
 )
 
 # Build both static and shared libraries
-add_library(hydra_crypto STATIC ${HYDRA_CRYPTO_SOURCES} ${HYDRA_CRYPTO_HEADERS})
-add_library(hydra_crypto_shared SHARED ${HYDRA_CRYPTO_SOURCES} ${HYDRA_CRYPTO_HEADERS})
+add_library(hydra_crypto STATIC ${HYDRA_CRYPTO_SOURCES})
+add_library(hydra_crypto_shared SHARED ${HYDRA_CRYPTO_SOURCES})
 
 # Set the output name for the shared library based on platform
 if(WIN32)

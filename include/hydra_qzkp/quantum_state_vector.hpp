@@ -26,7 +26,7 @@ public:
     double entanglement() const;
     void set_entanglement(double e);
 
-    double coherence();
+    double coherence() const;
     void set_coherence(double c);
 
     const std::string& state_type() const;

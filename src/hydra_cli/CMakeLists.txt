@@ -42,6 +42,7 @@ set(HYDRA_CLI_SOURCES
     src/crypto_commands_decrypt.cpp
     src/crypto_commands_encrypt.cpp
     src/crypto_commands_keyinfo.cpp
+    src/crypto_commands_address.cpp
     src/kernel_commands.cpp
     src/kernel_commands_run.cpp
 )
@@ -70,6 +71,7 @@ target_link_libraries(hydra-cli
         hydra_vfs
         hydra_crypto
         hydra_kernel
+        hydra_address
         /usr/local/Cellar/yaml-cpp/0.8.0/lib/libyaml-cpp.dylib
 )
 

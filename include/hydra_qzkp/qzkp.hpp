@@ -21,6 +21,10 @@ public:
 
     bool verify_proof(const std::vector<uint8_t>& commitment, const Proof& proof, const std::string& identifier);
 
+    std::vector<bool> verify_proof_batch(
+        const std::vector<std::tuple<std::vector<uint8_t>, Proof, std::string>>& batch,
+        size_t batch_size);
+
 private:
     std::vector<uint8_t> generate_commitment(const QuantumStateVector& state, const std::string& identifier);
     double calculate_entropy(const std::vector<Complex>& state_coords);

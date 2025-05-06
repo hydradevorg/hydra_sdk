@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 
     // Parse first argument (category)
     std::string category = argv[1];
-    
+
     // Handle global commands
     if (category == "help") {
         print_help();
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     std::map<std::string, std::unique_ptr<hydra::cli::Command>> vfs_commands;
     std::map<std::string, std::unique_ptr<hydra::cli::Command>> crypto_commands;
     std::map<std::string, std::unique_ptr<hydra::cli::Command>> kernel_commands;
-    
+
     // Register VFS commands
     vfs_commands["container"] = std::make_unique<hydra::cli::vfs::ContainerCommand>();
     vfs_commands["ls"] = std::make_unique<hydra::cli::vfs::ListCommand>();
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
     vfs_commands["rm"] = std::make_unique<hydra::cli::vfs::RemoveCommand>();
     vfs_commands["mkdir"] = std::make_unique<hydra::cli::vfs::MkdirCommand>();
     vfs_commands["stats"] = std::make_unique<hydra::cli::vfs::StatsCommand>();
-    
+
     // Register Crypto commands
     crypto_commands["keygen"] = std::make_unique<hydra::cli::crypto::KeygenCommand>();
     crypto_commands["encrypt"] = std::make_unique<hydra::cli::crypto::EncryptCommand>();
@@ -93,7 +93,8 @@ int main(int argc, char* argv[]) {
     crypto_commands["sign"] = std::make_unique<hydra::cli::crypto::SignCommand>();
     crypto_commands["verify"] = std::make_unique<hydra::cli::crypto::VerifyCommand>();
     crypto_commands["keyinfo"] = std::make_unique<hydra::cli::crypto::KeyInfoCommand>();
-    
+    crypto_commands["address"] = std::make_unique<hydra::cli::crypto::AddressCommand>();
+
     // Register Kernel commands
     kernel_commands["run"] = std::make_unique<hydra::cli::kernel::RunCommand>();
     kernel_commands["list"] = std::make_unique<hydra::cli::kernel::ListCommand>();
@@ -104,7 +105,7 @@ int main(int argc, char* argv[]) {
     kernel_commands["port"] = std::make_unique<hydra::cli::kernel::PortCommand>();
     kernel_commands["resource"] = std::make_unique<hydra::cli::kernel::ResourceCommand>();
     kernel_commands["init"] = std::make_unique<hydra::cli::kernel::InitCommand>();
-    
+
     // Handle category commands
     if (category == "vfs") {
         if (argc < 3 || std::string(argv[2]) == "--help" || std::string(argv[2]) == "-h") {
@@ -125,7 +126,7 @@ int main(int argc, char* argv[]) {
             std::cout << "  hydra-cli vfs [command] --help" << std::endl;
             return 0;
         }
-        
+
         std::string command = argv[2];
         if (vfs_commands.find(command) != vfs_commands.end()) {
             // Execute the command with the remaining arguments
@@ -151,12 +152,13 @@ int main(int argc, char* argv[]) {
             std::cout << "  sign                Create a digital signature" << std::endl;
             std::cout << "  verify              Verify a digital signature" << std::endl;
             std::cout << "  keyinfo             Display information about a key" << std::endl;
+            std::cout << "  address             Generate and manage cryptographic addresses" << std::endl;
             std::cout << std::endl;
             std::cout << "For more information on a specific command, use:" << std::endl;
             std::cout << "  hydra-cli crypto [command] --help" << std::endl;
             return 0;
         }
-        
+
         std::string command = argv[2];
         if (crypto_commands.find(command) != crypto_commands.end()) {
             // Execute the command with the remaining arguments
@@ -190,7 +192,7 @@ int main(int argc, char* argv[]) {
             std::cout << "  hydra-cli kernel [command] --help" << std::endl;
             return 0;
         }
-        
+
         std::string command = argv[2];
         if (kernel_commands.find(command) != kernel_commands.end()) {
             // Execute the command with the remaining arguments
@@ -209,6 +211,6 @@ int main(int argc, char* argv[]) {
         std::cerr << "Use 'hydra-cli help' for usage information" << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

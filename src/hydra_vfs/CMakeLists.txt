@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find OpenSSL package
 find_package(OpenSSL REQUIRED)
 
+# Add path to hydra_crypto
+set(HYDRA_CRYPTO_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../hydra_crypto)
+set(HYDRA_CRYPTO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../include)
+
 # Source files for the hydra_vfs library
 set(HYDRA_VFS_SOURCES
     src/vfs.cpp
@@ -27,7 +31,7 @@ set(HYDRA_VFS_SOURCES
 
 # Create the static hydra_vfs library
 add_library(hydra_vfs STATIC ${HYDRA_VFS_SOURCES})
-target_include_directories(hydra_vfs PUBLIC 
+target_include_directories(hydra_vfs PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors
@@ -36,13 +40,13 @@ target_link_libraries(hydra_vfs PUBLIC OpenSSL::Crypto hydra_crypto)
 
 # Create the shared hydra_vfs library
 add_library(hydra_vfs_shared SHARED ${HYDRA_VFS_SOURCES})
-target_include_directories(hydra_vfs_shared PUBLIC 
+target_include_directories(hydra_vfs_shared PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors
 )
 target_link_libraries(hydra_vfs_shared PUBLIC OpenSSL::Crypto hydra_crypto)
-set_target_properties(hydra_vfs_shared PROPERTIES 
+set_target_properties(hydra_vfs_shared PROPERTIES
     OUTPUT_NAME hydra_vfs
     VERSION 1.0.0
     SOVERSION 1

@@ -1,5 +1,5 @@
 #include "hydra_vfs/container_vfs.h"
-#include "crypto_utils.h"
+#include "hydra_vfs/crypto_utils.hpp"
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <random>

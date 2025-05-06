@@ -15,8 +15,8 @@ add_subdirectory(lib/blake3)
 # Add subdirectories for all components
 add_subdirectory(src/hydra_common)
 add_subdirectory(src/hydra_math)
+add_subdirectory(src/hydra_crypto) # Build hydra_crypto before hydra_vfs
 add_subdirectory(src/hydra_vfs)
-add_subdirectory(src/hydra_crypto)
 add_subdirectory(src/hydra_cli)
 add_subdirectory(src/hydra_kernel)
 add_subdirectory(src/hydra_server)

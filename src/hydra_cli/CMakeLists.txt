@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(hydra_cli VERSION 1.0.0 LANGUAGES CXX)
+project(hydra_cli VERSION 1.0.0 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,7 +58,7 @@ set(HYDRA_CLI_HEADERS
 add_executable(hydra-cli ${HYDRA_CLI_SOURCES} ${HYDRA_CLI_HEADERS})
 
 # Include directories
-target_include_directories(hydra-cli 
+target_include_directories(hydra-cli
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include

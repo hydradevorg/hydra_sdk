@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(hydra_crypto VERSION 0.1.0 LANGUAGES CXX)
+project(hydra_crypto VERSION 0.1.0 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -70,13 +70,13 @@ set_target_properties(hydra_crypto_shared PROPERTIES
 )
 
 # Include directories for both libraries
-target_include_directories(hydra_crypto 
-    PUBLIC 
+target_include_directories(hydra_crypto
+    PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/hydra_crypto
 )
 target_include_directories(hydra_crypto_shared
-    PUBLIC 
+    PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/hydra_crypto
 )
@@ -88,6 +88,7 @@ target_link_libraries(hydra_crypto
         OpenSSL::SSL
         OpenSSL::Crypto
         GMP::GMP
+        blake3
 )
 target_link_libraries(hydra_crypto_shared
     PUBLIC
@@ -95,6 +96,7 @@ target_link_libraries(hydra_crypto_shared
         OpenSSL::SSL
         OpenSSL::Crypto
         GMP::GMP
+        blake3
 )
 
 # Compile features for both libraries

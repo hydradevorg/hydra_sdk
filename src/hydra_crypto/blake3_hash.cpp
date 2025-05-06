@@ -39,9 +39,7 @@ void Blake3Hash::update(const void* data, size_t size) {
     blake3_hasher_update(static_cast<blake3_hasher*>(m_hasher), data, size);
 }
 
-void Blake3Hash::update(std::span<const uint8_t> data) {
-    update(data.data(), data.size());
-}
+// std::span version removed due to compatibility issues
 
 void Blake3Hash::update(const std::vector<uint8_t>& data) {
     update(data.data(), data.size());
@@ -72,9 +70,7 @@ std::vector<uint8_t> Blake3Hash::hash(const void* data, size_t size, size_t outp
     return hasher.finalize(output_size);
 }
 
-std::vector<uint8_t> Blake3Hash::hash(std::span<const uint8_t> data, size_t output_size) {
-    return hash(data.data(), data.size(), output_size);
-}
+// std::span version removed due to compatibility issues
 
 std::vector<uint8_t> Blake3Hash::hash(const std::vector<uint8_t>& data, size_t output_size) {
     return hash(data.data(), data.size(), output_size);
@@ -89,9 +85,7 @@ std::string Blake3Hash::hashHex(const void* data, size_t size, size_t output_siz
     return toHex(binary);
 }
 
-std::string Blake3Hash::hashHex(std::span<const uint8_t> data, size_t output_size) {
-    return hashHex(data.data(), data.size(), output_size);
-}
+// std::span version removed due to compatibility issues
 
 std::string Blake3Hash::hashHex(const std::vector<uint8_t>& data, size_t output_size) {
     return hashHex(data.data(), data.size(), output_size);
@@ -104,11 +98,11 @@ std::string Blake3Hash::hashHex(const std::string& data, size_t output_size) {
 std::string Blake3Hash::toHex(const std::vector<uint8_t>& data) {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
-    
+
     for (const auto& byte : data) {
         ss << std::setw(2) << static_cast<int>(byte);
     }
-    
+
     return ss.str();
 }
 

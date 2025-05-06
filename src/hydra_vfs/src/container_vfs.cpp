@@ -1,5 +1,7 @@
 #include "hydra_vfs/container_vfs.h"
 #include "hydra_vfs/crypto_utils.hpp"
+#include "hydra_vfs/container_vfs_fixes.hpp"
+#include "hydra_vfs/path_utils.hpp"
 #include <cstring>
 #include <algorithm>
 #include <iostream>
@@ -9,7 +11,6 @@
 #include <random>
 #include <sstream>
 #include <iomanip>
-#include <filesystem>
 
 namespace hydra {
 namespace vfs {
@@ -21,7 +22,7 @@ ContainerVFS::ContainerVFS(const std::string& container_path,
                          std::shared_ptr<IVirtualFileSystem> base_vfs,
                          SecurityLevel security_level,
                          const ResourceLimits& resource_limits)
-    : m_container_path(container_path)
+    : m_container_path_handler(std::make_shared<ContainerPathHandler>(container_path))
     , m_encryption_provider(encryption_provider)
     , m_key(key)
     , m_base_vfs(base_vfs)
@@ -39,10 +40,11 @@ ContainerVFS::ContainerVFS(const std::string& container_path,
     }
 
     // Make sure the parent directory exists
-    std::filesystem::path path(container_path);
-    if (!path.parent_path().empty()) {
-        std::cout << "DEBUG: Creating parent directories: " << path.parent_path().string() << std::endl;
-        std::filesystem::create_directories(path.parent_path());
+    std::string container_file_path = m_container_path_handler->get_absolute_container_path();
+    std::string parent_dir = PathUtils::get_parent_directory(container_file_path);
+    if (!parent_dir.empty()) {
+        std::cout << "DEBUG: Creating parent directories: " << parent_dir << std::endl;
+        m_container_path_handler->ensure_container_directory();
     }
 
     std::cout << "DEBUG: Calling initialize_container" << std::endl;
@@ -85,15 +87,15 @@ Result<void> ContainerVFS::initialize_container() {
 
     try {
         // Check if container file exists
-        std::cout << "DEBUG: Checking if container file exists at " << m_container_path << std::endl;
-        bool container_exists = m_base_vfs->file_exists(m_container_path);
+        std::cout << "DEBUG: Checking if container file exists at " << m_container_path_handler->get_absolute_container_path() << std::endl;
+        bool container_exists = m_container_path_handler->container_file_exists();
         std::cout << "DEBUG: Container file exists: " << (container_exists ? "yes" : "no") << std::endl;
 
         if (container_exists) {
             std::cout << "DEBUG: Opening existing container" << std::endl;
 
             // Open the container file
-            auto file_result = m_base_vfs->open_file(m_container_path, FileMode::READ_WRITE);
+            auto file_result = ContainerVFSFixes::open_container_file(m_container_path_handler, m_base_vfs, FileMode::READ_WRITE);
             if (!file_result) {
                 std::cerr << "DEBUG: Failed to open container file: " << static_cast<int>(file_result.error()) << std::endl;
                 return Result<void>(file_result.error());
@@ -109,7 +111,8 @@ Result<void> ContainerVFS::initialize_container() {
 
                 // If we're in a test environment (detected by checking if the path contains 'test'),
                 // initialize a new container instead of failing
-                if (m_container_path.find("test") != std::string::npos) {
+                std::string container_path = m_container_path_handler->get_absolute_container_path();
+                if (container_path.find("test") != std::string::npos) {
                     std::cout << "DEBUG: Test environment detected, initializing new container" << std::endl;
 
                     // Close the current file
@@ -117,21 +120,22 @@ Result<void> ContainerVFS::initialize_container() {
                     m_container_file = nullptr;
 
                     // Delete the existing file
-                    auto delete_result = m_base_vfs->delete_file(m_container_path);
-                    if (!delete_result) {
-                        std::cerr << "DEBUG: Failed to delete corrupted container file: " << static_cast<int>(delete_result.error()) << std::endl;
+                    bool deleted = m_container_path_handler->delete_container_file();
+                    if (!deleted) {
+                        std::cerr << "DEBUG: Failed to delete corrupted container file" << std::endl;
                         // Instead of returning an error, we'll try to create a new file anyway
                     }
 
                     // Create a new container file with a different approach for tests
-                    auto create_result = m_base_vfs->create_file(m_container_path);
+                    std::string container_file_path = m_container_path_handler->get_absolute_container_path();
+                    auto create_result = m_base_vfs->create_file(container_file_path);
                     if (!create_result) {
                         std::cerr << "DEBUG: Failed to create new container file: " << static_cast<int>(create_result.error()) << std::endl;
                         return Result<void>(create_result.error());
                     }
 
                     // Open the newly created file
-                    auto open_result = m_base_vfs->open_file(m_container_path, FileMode::READ_WRITE);
+                    auto open_result = m_base_vfs->open_file(container_file_path, FileMode::READ_WRITE);
                     if (!open_result) {
                         std::cerr << "DEBUG: Failed to open new container file: " << static_cast<int>(open_result.error()) << std::endl;
                         return Result<void>(open_result.error());
@@ -263,14 +267,15 @@ Result<void> ContainerVFS::initialize_container() {
 
             try {
                 // Create a new container file
-                auto create_result = m_base_vfs->create_file(m_container_path);
+                std::string container_file_path = m_container_path_handler->get_absolute_container_path();
+                auto create_result = m_base_vfs->create_file(container_file_path);
                 if (!create_result) {
                     std::cerr << "DEBUG: Failed to create container file: " << static_cast<int>(create_result.error()) << std::endl;
                     return Result<void>(create_result.error());
                 }
 
                 // Open the container file
-                auto file_result = m_base_vfs->open_file(m_container_path, FileMode::READ_WRITE);
+                auto file_result = m_base_vfs->open_file(container_file_path, FileMode::READ_WRITE);
                 if (!file_result) {
                     std::cerr << "DEBUG: Failed to open container file: " << static_cast<int>(file_result.error()) << std::endl;
                     return Result<void>(file_result.error());
@@ -638,7 +643,8 @@ Result<void> ContainerVFS::load_metadata(bool strict_verification) {
             std::cout << "DEBUG: Verifying container integrity hash" << std::endl;
 
             // Check if we're in test mode by looking at the container path
-            if (m_container_path.find("test_") != std::string::npos) {
+            std::string container_file_path = m_container_path_handler->get_absolute_container_path();
+            if (container_file_path.find("test_") != std::string::npos) {
                 std::cout << "DEBUG: Using dummy hash function for testing" << std::endl;
                 // In test mode, we'll skip the integrity check
                 std::cout << "DEBUG: Test mode detected, skipping integrity hash verification" << std::endl;
@@ -1660,8 +1666,9 @@ Result<std::shared_ptr<IFile>> ContainerVFS::open_file(const std::string& path, 
 
     // Open container file if not already open
     if (!m_container_file) {
-        std::cout << "DEBUG: Opening container file: " << m_container_path << std::endl;
-        auto open_result = m_base_vfs->open_file(m_container_path, FileMode::READ_WRITE);
+        std::string container_file_path = m_container_path_handler->get_absolute_container_path();
+        std::cout << "DEBUG: Opening container file: " << container_file_path << std::endl;
+        auto open_result = m_base_vfs->open_file(container_file_path, FileMode::READ_WRITE);
         if (!open_result) {
             std::cerr << "DEBUG: Failed to open container file: " << static_cast<int>(open_result.error()) << std::endl;
             return open_result.error();

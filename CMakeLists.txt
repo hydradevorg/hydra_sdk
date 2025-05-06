@@ -9,7 +9,7 @@ find_package(yaml-cpp REQUIRED)
 
 # Add custom find modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
-add_subdirectory(lib/blake3)
+add_subdirectory(lib/blake3/c)
 
 
 # Add subdirectories for all components
@@ -21,7 +21,7 @@ add_subdirectory(src/hydra_cli)
 add_subdirectory(src/hydra_kernel)
 add_subdirectory(src/hydra_server)
 add_subdirectory(src/hydra_compression)
-add_subdirectory(src/hydra_qtm_vm)
+add_subdirectory(src/hydra_qtm)
 
 # Add examples
 add_subdirectory(examples/vfs_example)

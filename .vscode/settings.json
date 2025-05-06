@@ -3,6 +3,8 @@
         "*.page-template": "vue",
         "*.layout-template": "vue",
         "*.vue": "vue",
-        "kroneckerproduct": "cpp"
-    }
+        "kroneckerproduct": "cpp",
+        "optional": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

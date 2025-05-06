@@ -4,9 +4,7 @@
 namespace hydra {
 namespace crypto {
 
-std::shared_ptr<IHashingProvider> create_blake3_provider() {
-    return std::make_shared<Blake3Provider>();
-}
+// Factory function moved to blake3_provider.cpp to avoid duplicate symbols
 
 } // namespace crypto
 } // namespace hydra

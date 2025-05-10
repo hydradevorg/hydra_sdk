@@ -6,7 +6,7 @@
 
 namespace hydra { namespace common {
 
-// --- To BigInt ---
+
 
 inline math::BigInt toBigInt(const std::string& str, int base = 10) {
     math::BigInt result;

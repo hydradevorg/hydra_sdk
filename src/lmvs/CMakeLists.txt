@@ -21,15 +21,28 @@ elseif(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 endif()
 
+# Add cmake modules path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 # Find required packages
 find_package(OpenSSL REQUIRED)
 find_package(GMP REQUIRED)
+
+# Define GMP target if not defined
+if(NOT TARGET GMP::GMP)
+    add_library(GMP::GMP UNKNOWN IMPORTED)
+    set_target_properties(GMP::GMP PROPERTIES
+        IMPORTED_LOCATION "${GMP_LIBRARIES}"
+        INTERFACE_INCLUDE_DIRECTORIES "${GMP_INCLUDE_DIRS}"
+    )
+endif()
 
 # Include directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../..
     ${OPENSSL_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../build_wasm/mock/include
 )
 
 # Source files
@@ -55,12 +68,6 @@ add_library(lmvs STATIC
 # Link dependencies
 target_link_libraries(lmvs
     PUBLIC
-    hydra_math
-    hydra_crypto
-    hydra_vfs
-    hydra_compression_tvc
-    hydra_compression_ost
-    hydra_qtm
     ${OPENSSL_LIBRARIES}
     GMP::GMP
 )

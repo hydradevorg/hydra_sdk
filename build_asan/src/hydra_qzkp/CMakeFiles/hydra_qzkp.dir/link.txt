@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libhydra_qzkp.a CMakeFiles/hydra_qzkp.dir/src/qzkp.cpp.o CMakeFiles/hydra_qzkp.dir/src/quantum_state_vector.cpp.o CMakeFiles/hydra_qzkp.dir/src/result_cache.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libhydra_qzkp.a

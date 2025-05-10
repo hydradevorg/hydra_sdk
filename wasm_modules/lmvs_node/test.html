@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LMVS Node.js Test</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .result { font-family: monospace; white-space: pre; background: #f5f5f5; padding: 10px; }
+    button { padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>LMVS Node.js Test</h1>
+  
+  <button id="testButton">Run Test</button>
+  <div id="result" class="result"></div>
+  
+  <script type="module">
+    import lmvsModule from '../lmvs/lmvs.js';
+    
+    document.getElementById('testButton').addEventListener('click', async () => {
+      try {
+        const LMVSModule = lmvsModule();
+        
+        // Create an LMVS instance with 3 layers and vector size 32
+        const lmvs = LMVSModule.createLMVS(3, 32);
+        
+        // Get LMVS information
+        const numLayers = LMVSModule.getLMVSNumLayers(lmvs);
+        const vectorSize = LMVSModule.getLMVSVectorSize(lmvs);
+        const lmvsInfo = LMVSModule.getLMVSString(lmvs);
+        
+        // Generate a vector
+        const vector = LMVSModule.generateLMVSVector(lmvs);
+        
+        // Multiply the vector
+        const result = LMVSModule.multiplyLMVSVector(lmvs, vector);
+        
+        // Format the output
+        let output = `${lmvsInfo}\n\n`;
+        output += `Generated vector (first 5 elements):\n`;
+        output += `[${vector.slice(0, 5).map(v => v.toString()).join(', ')}...]\n\n`;
+        output += `Multiplication result (first 5 elements):\n`;
+        output += `[${result.slice(0, 5).map(v => v.toString()).join(', ')}...]\n`;
+        
+        document.getElementById('result').textContent = output;
+      } catch (error) {
+        document.getElementById('result').textContent = `Error: ${error.message}`;
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>

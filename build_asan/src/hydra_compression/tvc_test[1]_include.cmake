@@ -1,0 +1,5 @@
+if(EXISTS "/Volumes/BIGCODE/hydra_sdk/build_asan/src/hydra_compression/tvc_test[1]_tests.cmake")
+  include("/Volumes/BIGCODE/hydra_sdk/build_asan/src/hydra_compression/tvc_test[1]_tests.cmake")
+else()
+  add_test(tvc_test_NOT_BUILT tvc_test_NOT_BUILT)
+endif()

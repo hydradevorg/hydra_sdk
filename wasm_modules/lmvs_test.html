@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMVS WebAssembly Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>LMVS WebAssembly Test</h1>
+  
+  <button id="testBigIntVector">Test BigIntVector</button>
+  <button id="testLayeredBigIntVector">Test LayeredBigIntVector</button>
+  <button id="clearOutput">Clear Output</button>
+  
+  <pre id="output"></pre>
+
+  <script type="module">
+    import { initLMVSModule, createBigIntVector, createLayeredBigIntVector } from './lmvs/lmvs_wrapper.js';
+    import { createBigInt } from './gmp/gmp_wrapper.js';
+    
+    const outputElement = document.getElementById('output');
+    
+    function log(message) {
+      outputElement.textContent += message + '\n';
+    }
+    
+    document.getElementById('clearOutput').addEventListener('click', () => {
+      outputElement.textContent = '';
+    });
+    
+    document.getElementById('testBigIntVector').addEventListener('click', async () => {
+      try {
+        log('Initializing LMVS module...');
+        const { lmvs, gmp } = await initLMVSModule();
+        log('LMVS module initialized successfully!');
+        
+        log('\nTesting BigIntVector:');
+        
+        // Create a BigIntVector
+        const vector = await createBigIntVector(lmvs, gmp, 5);
+        log(`Created BigIntVector with size: ${vector.size()}`);
+        
+        // Set values
+        await vector.set(0, "12345678901234567890");
+        await vector.set(1, "98765432109876543210");
+        await vector.set(2, 42);
+        await vector.set(3, 123);
+        await vector.set(4, 456);
+        
+        log(`Vector: ${vector.toString()}`);
+        
+        // Get values
+        const value0 = await vector.get(0);
+        const value1 = await vector.get(1);
+        const value2 = await vector.get(2);
+        
+        log(`Value at index 0: ${value0.toString()}`);
+        log(`Value at index 1: ${value1.toString()}`);
+        log(`Value at index 2: ${value2.toString()}`);
+        
+        // Clean up
+        vector.destroy();
+        value0.destroy();
+        value1.destroy();
+        value2.destroy();
+        
+        log('\nBigIntVector test completed successfully!');
+      } catch (error) {
+        log(`Error: ${error.message}`);
+        console.error(error);
+      }
+    });
+    
+    document.getElementById('testLayeredBigIntVector').addEventListener('click', async () => {
+      try {
+        log('Initializing LMVS module...');
+        const { lmvs, gmp } = await initLMVSModule();
+        log('LMVS module initialized successfully!');
+        
+        log('\nTesting LayeredBigIntVector:');
+        
+        // Create a LayeredBigIntVector with 3 layers and 4 elements
+        const vector = await createLayeredBigIntVector(lmvs, gmp, 3, 4);
+        log(`Created LayeredBigIntVector with ${vector.numLayers()} layers and size: ${vector.size()}`);
+        
+        // Set values in different layers
+        await vector.set(0, 0, "12345678901234567890");
+        await vector.set(0, 1, "98765432109876543210");
+        await vector.set(1, 0, 42);
+        await vector.set(1, 1, 123);
+        await vector.set(2, 0, 456);
+        await vector.set(2, 1, 789);
+        
+        log(`Vector: ${vector.toString()}`);
+        
+        // Get values from different layers
+        const value00 = await vector.get(0, 0);
+        const value01 = await vector.get(0, 1);
+        const value10 = await vector.get(1, 0);
+        const value20 = await vector.get(2, 0);
+        
+        log(`Value at layer 0, index 0: ${value00.toString()}`);
+        log(`Value at layer 0, index 1: ${value01.toString()}`);
+        log(`Value at layer 1, index 0: ${value10.toString()}`);
+        log(`Value at layer 2, index 0: ${value20.toString()}`);
+        
+        // Clean up
+        vector.destroy();
+        value00.destroy();
+        value01.destroy();
+        value10.destroy();
+        value20.destroy();
+        
+        log('\nLayeredBigIntVector test completed successfully!');
+      } catch (error) {
+        log(`Error: ${error.message}`);
+        console.error(error);
+      }
+    });
+    
+    log('LMVS WebAssembly test page loaded. Click the buttons to run tests.');
+  </script>
+</body>
+</html>

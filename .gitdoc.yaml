@@ -1,0 +1,147 @@
+title: Hydra SDK Documentation
+description: Comprehensive documentation for the Hydra SDK modules and tools
+output_dir: docs/gitdoc
+theme: default
+
+modules:
+  - name: hydra_cli
+    title: Hydra CLI
+    description: Command-line interface for interacting with Hydra SDK functionality
+    source_dir: src/hydra_cli
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_crypto
+    title: Hydra Crypto
+    description: Cryptographic operations including encryption, signatures, and key management
+    source_dir: src/hydra_crypto
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_vfs
+    title: Hydra VFS
+    description: Virtual File System for secure storage and retrieval of data
+    source_dir: src/hydra_vfs
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_address
+    title: Hydra Address
+    description: Address generation and management for the P2P VFS
+    source_dir: src/hydra_address
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_qzkp
+    title: Hydra QZKP
+    description: Quantum Zero-Knowledge Proofs for secure verification
+    source_dir: src/hydra_qzkp
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_kernel
+    title: Hydra Kernel
+    description: Container process isolation for secure execution environments
+    source_dir: src/hydra_kernel
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_lmvs
+    title: Hydra LMVS
+    description: Layered Matrix and Vector System for secure consensus and fault tolerance
+    source_dir: src/hydra_lmvs
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_math
+    title: Hydra Math
+    description: Mathematical utilities including BigInt and matrix operations
+    source_dir: src/hydra_math
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+  - name: hydra_compression
+    title: Hydra Compression
+    description: Data compression algorithms for efficient storage and transmission
+    source_dir: src/hydra_compression
+    include_patterns:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.hpp"
+    exclude_patterns:
+      - "**/tests/**"
+
+# Documentation generation settings
+settings:
+  extract_comments: true
+  extract_function_signatures: true
+  extract_class_definitions: true
+  generate_api_reference: true
+  generate_examples: true
+  generate_usage_guide: true
+  include_source_links: true
+  syntax_highlighting: true
+  table_of_contents: true
+  search_enabled: true
+
+# Custom sections to include in each module's documentation
+custom_sections:
+  - title: Overview
+    content_file: docs/custom/overview.md
+    modules: all
+
+  - title: Installation
+    content_file: docs/custom/installation.md
+    modules: all
+
+  - title: Getting Started
+    content_file: docs/custom/getting_started.md
+    modules: all
+
+  - title: Examples
+    content_file: docs/custom/examples.md
+    modules: all
+
+  - title: API Reference
+    auto_generate: true
+    modules: all
+
+  - title: Advanced Usage
+    content_file: docs/custom/advanced_usage.md
+    modules: all
+
+  - title: Thread Safety
+    content_file: docs/custom/thread_safety.md
+    modules: all

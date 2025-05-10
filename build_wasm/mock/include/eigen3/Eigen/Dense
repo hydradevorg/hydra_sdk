@@ -1,0 +1,4 @@
+// Mock Eigen Dense header for WebAssembly build
+#pragma once
+
+#include "Core"

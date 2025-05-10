@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hydra WASM Test</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .module { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    .result { font-family: monospace; white-space: pre; background: #f5f5f5; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Hydra WASM Test</h1>
+
+  <div class="module">
+    <h2>Crypto Module Test</h2>
+    <button id="cryptoTest">Run Test</button>
+    <div id="cryptoResult" class="result"></div>
+  </div>
+
+  <div class="module">
+    <h2>Address Module Test</h2>
+    <button id="addressTest">Run Test</button>
+    <div id="addressResult" class="result"></div>
+  </div>
+
+  <div class="module">
+    <h2>VFS Module Test</h2>
+    <button id="vfsTest">Run Test</button>
+    <div id="vfsResult" class="result"></div>
+  </div>
+
+  <div class="module">
+    <h2>LMVS Module Test</h2>
+    <button id="lmvsTest">Run Test</button>
+    <div id="lmvsResult" class="result"></div>
+  </div>
+
+  <script type="module">
+    // Crypto Module
+    document.getElementById('cryptoTest').addEventListener('click', async () => {
+      try {
+        const cryptoModule = await import('./hydra_crypto/hydra_crypto.js');
+        const CryptoModule = await cryptoModule.default();
+
+        const hasher = new CryptoModule.Blake3Hash();
+        const result = hasher.hash("Hydra Crypto Test");
+
+        const hex = Array.from(result).map(b => b.toString(16).padStart(2, '0')).join('');
+        document.getElementById('cryptoResult').textContent = 'Hash: ' + hex;
+      } catch (error) {
+        document.getElementById('cryptoResult').textContent = 'Error: ' + error.message;
+      }
+    });
+
+    // Address Module
+    document.getElementById('addressTest').addEventListener('click', async () => {
+      try {
+        const addressModule = await import('./hydra_address/hydra_address.js');
+        const AddressModule = await addressModule.default();
+
+        const generator = new AddressModule.AddressGenerator(128);
+
+        // Create a test public key (random bytes)
+        const publicKey = new Uint8Array(32);
+        crypto.getRandomValues(publicKey);
+
+        const address = generator.generateAddress(publicKey);
+        document.getElementById('addressResult').textContent = 'Generated Address: ' + address;
+      } catch (error) {
+        document.getElementById('addressResult').textContent = 'Error: ' + error.message;
+      }
+    });
+
+    // VFS Module
+    document.getElementById('vfsTest').addEventListener('click', async () => {
+      try {
+        const vfsModule = await import('./hydra_vfs/hydra_vfs.js');
+        const VFSModule = await vfsModule.default();
+
+        const vfs = new VFSModule.P2PVFS("browser-node", "/virtual/storage");
+        vfs.addPeer("test-peer", "localhost:8000");
+
+        const peers = vfs.getPeers();
+        const files = vfs.listFiles("/");
+
+        let output = 'Node initialized\n';
+        output += 'Peers: ' + peers.join(', ') + '\n';
+        output += 'Files: ' + files.value.join(', ') + '\n';
+
+        document.getElementById('vfsResult').textContent = output;
+      } catch (error) {
+        document.getElementById('vfsResult').textContent = 'Error: ' + error.message;
+      }
+    });
+
+    // LMVS Module
+    document.getElementById('lmvsTest').addEventListener('click', async () => {
+      try {
+        const lmvsModule = await import('./lmvs/lmvs.js');
+        const LMVSModule = await lmvsModule.default();
+
+        // Create an LMVS instance with 3 layers and vector size 32
+        const lmvs = LMVSModule.createLMVS(3, 32);
+
+        // Get LMVS information
+        const numLayers = LMVSModule.getLMVSNumLayers(lmvs);
+        const vectorSize = LMVSModule.getLMVSVectorSize(lmvs);
+        const lmvsInfo = LMVSModule.getLMVSString(lmvs);
+
+        // Generate a vector
+        const vector = LMVSModule.generateLMVSVector(lmvs);
+
+        // Multiply the vector
+        const result = LMVSModule.multiplyLMVSVector(lmvs, vector);
+
+        let output = lmvsInfo + '\n';
+        output += 'Generated vector: [' + vector.slice(0, 5).join(', ') + '...]\n';
+        output += 'Multiplication result: [' + result.slice(0, 5).join(', ') + '...]\n';
+
+        // Clean up
+        LMVSModule.destroyLMVS(lmvs);
+
+        document.getElementById('lmvsResult').textContent = output;
+      } catch (error) {
+        document.getElementById('lmvsResult').textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

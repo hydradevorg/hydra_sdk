@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhydra_crypto.a CMakeFiles/hydra_crypto.dir/kyber_kem.cpp.obj CMakeFiles/hydra_crypto.dir/dilithium_signature.cpp.obj CMakeFiles/hydra_crypto.dir/kyber_aes.cpp.obj CMakeFiles/hydra_crypto.dir/falcon_signature.cpp.obj CMakeFiles/hydra_crypto.dir/root_key_manager.cpp.obj CMakeFiles/hydra_crypto.dir/blake3_hash.cpp.obj CMakeFiles/hydra_crypto.dir/thread_safe_blake3_hash.cpp.obj CMakeFiles/hydra_crypto.dir/blake3_provider.cpp.obj CMakeFiles/hydra_crypto.dir/hashing.cpp.obj
+/usr/bin/ranlib libhydra_crypto.a

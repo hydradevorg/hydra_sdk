@@ -1,0 +1,5 @@
+if(EXISTS "/Volumes/BIGCODE/hydra_sdk/build_asan/src/hydra_qtm/hydra_qtm_tests[1]_tests.cmake")
+  include("/Volumes/BIGCODE/hydra_sdk/build_asan/src/hydra_qtm/hydra_qtm_tests[1]_tests.cmake")
+else()
+  add_test(hydra_qtm_tests_NOT_BUILT hydra_qtm_tests_NOT_BUILT)
+endif()

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydra Address Module Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <style>
+        body {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .header {
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .footer {
+            padding-top: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid #e5e5e5;
+            text-align: center;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hydra Address Module</h1>
+            <p class="lead">Address generation and management for the P2P VFS</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <nav id="navbar-module" class="h-100 flex-column align-items-stretch">
+                    <nav class="nav nav-pills flex-column">
+                        <a class="nav-link" href="#overview">Overview</a>
+                        <a class="nav-link" href="#installation">Installation</a>
+                        <a class="nav-link" href="#address-types">Address Types</a>
+                        <a class="nav-link" href="#address-formats">Address Formats</a>
+                        <a class="nav-link" href="#cli-usage">CLI Usage</a>
+                        <a class="nav-link" href="#api-usage">API Usage</a>
+                        <a class="nav-link" href="#examples">Examples</a>
+                        <a class="nav-link" href="#advanced-usage">Advanced Usage</a>
+                        <a class="nav-link" href="#api-reference">API Reference</a>
+                    </nav>
+                </nav>
+            </div>
+            <div class="col-md-9">
+                <div data-bs-spy="scroll" data-bs-target="#navbar-module" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0">
+                    <section id="overview">
+                        <h2>Overview</h2>
+                        <p>
+                            The Hydra Address module provides functionality for generating and managing cryptographic addresses for the P2P VFS.
+                            It implements the Layered Matrix and Vector System for secure consensus, fault tolerance, and data projection.
+                        </p>
+                        <p>
+                            The module supports various address types and formats, including standard addresses, geohashed addresses, quantum-resistant addresses, and compressed addresses.
+                        </p>
+                    </section>
+
+                    <section id="installation">
+                        <h2>Installation</h2>
+                        <p>
+                            The Hydra Address module is part of the Hydra SDK. To install it, follow the instructions in the <a href="../installation.html">Installation Guide</a>.
+                        </p>
+                    </section>
+
+                    <section id="address-types">
+                        <h2>Address Types</h2>
+                        <p>
+                            The Hydra address system supports four types of addresses:
+                        </p>
+                        <ul>
+                            <li><strong>User Addresses</strong>: Used for identifying users in the P2P network</li>
+                            <li><strong>Node Addresses</strong>: Used for identifying nodes in the P2P network</li>
+                            <li><strong>Resource Addresses</strong>: Used for identifying resources in the P2P VFS</li>
+                            <li><strong>Service Addresses</strong>: Used for identifying services in the P2P network</li>
+                        </ul>
+                    </section>
+
+                    <section id="address-formats">
+                        <h2>Address Formats</h2>
+                        <p>
+                            The Hydra address system supports four formats:
+                        </p>
+                        <ul>
+                            <li><strong>Standard Format</strong>: Base58-encoded address with full cryptographic properties</li>
+                            <li><strong>Geohashed Format</strong>: Includes location data for geospatial applications</li>
+                            <li><strong>Quantum-Resistant Format</strong>: Includes quantum zero-knowledge proofs for post-quantum security</li>
+                            <li><strong>Compressed Format</strong>: Ultra-compact representation (< 100 bytes) for efficient storage</li>
+                        </ul>
+                    </section>
+
+                    <section id="cli-usage">
+                        <h2>CLI Usage</h2>
+                        <p>
+                            The Hydra CLI provides commands for generating and managing addresses:
+                        </p>
+                        <pre><code class="language-bash">hydra-cli crypto address OPERATION [OPTIONS]</code></pre>
+                        <p>
+                            Available operations:
+                        </p>
+                        <ul>
+                            <li><code>standard</code>: Generate a standard address from a public key</li>
+                            <li><code>geo</code>: Generate a geohashed address with location data</li>
+                            <li><code>quantum</code>: Generate a quantum-resistant address</li>
+                            <li><code>compressed</code>: Generate a compressed address (< 100 bytes)</li>
+                            <li><code>verify</code>: Verify an address and display its details</li>
+                        </ul>
+                        <p>
+                            For more information, see the <a href="../hydra_cli_address.html">Hydra CLI Address Generation</a> documentation.
+                        </p>
+                    </section>
+
+                    <section id="api-usage">
+                        <h2>API Usage</h2>
+                        <p>
+                            The Hydra Address module provides a C++ API for generating and managing addresses:
+                        </p>
+                        <pre><code class="language-cpp">#include &lt;hydra_address/address_generator.hpp&gt;
+
+// Create an address generator
+hydra::address::AddressGenerator address_gen;
+
+// Generate a standard address
+auto standard_address = address_gen.generateFromPublicKey(
+    public_key,
+    hydra::address::AddressType::USER,
+    hydra::address::AddressFormat::STANDARD
+);
+
+// Generate a compressed address
+auto compressed_address = address_gen.generateCompressedAddress(
+    public_key,
+    hydra::address::AddressType::RESOURCE
+);
+
+// Generate a geohashed address
+hydra::address::Coordinates coords{37.7749, -122.4194, 0.0};
+auto geo_address = address_gen.generateGeoAddress(
+    public_key,
+    coords,
+    hydra::address::AddressType::NODE
+);
+
+// Verify an address
+bool is_valid = address_gen.verifyAddress(address);</code></pre>
+                    </section>
+
+                    <section id="examples">
+                        <h2>Examples</h2>
+                        <h3>Generating and Verifying Addresses</h3>
+                        <pre><code class="language-bash">#!/bin/bash
+# Generate a key pair
+hydra-cli crypto keygen --algorithm falcon --type public public_key.bin
+hydra-cli crypto keygen --algorithm falcon --type private private_key.bin
+
+# Generate a standard address
+STANDARD_ADDR=$(hydra-cli crypto address standard --type user public_key.bin | grep "Standard Address:" | cut -d' ' -f3)
+echo "Generated standard address: $STANDARD_ADDR"
+
+# Generate a compressed address
+COMPRESSED_ADDR=$(hydra-cli crypto address compressed --type resource public_key.bin | grep "Compressed Address:" | cut -d' ' -f3)
+echo "Generated compressed address: $COMPRESSED_ADDR"
+
+# Verify the addresses
+hydra-cli crypto address verify "$STANDARD_ADDR"
+hydra-cli crypto address verify "$COMPRESSED_ADDR"</code></pre>
+                        <h3>Programmatic Address Generation</h3>
+                        <pre><code class="language-cpp">#include &lt;hydra_address/address_generator.hpp&gt;
+#include &lt;hydra_crypto/falcon_signature.hpp&gt;
+#include &lt;iostream&gt;
+
+int main() {
+    // Generate a key pair
+    hydra::crypto::FalconSignature falcon(512);
+    auto [public_key, private_key] = falcon.generate_key_pair();
+    
+    // Create an address generator
+    hydra::address::AddressGenerator address_gen;
+    
+    // Generate a compressed address
+    auto compressed_address = address_gen.generateCompressedAddress(
+        public_key,
+        hydra::address::AddressType::RESOURCE
+    );
+    
+    std::cout << "Compressed Address: " << compressed_address.toString() << std::endl;
+    std::cout << "Address Size: " << compressed_address.getData().size() << " bytes" << std::endl;
+    
+    return 0;
+}</code></pre>
+                    </section>
+
+                    <section id="advanced-usage">
+                        <h2>Advanced Usage</h2>
+                        <h3>Custom Address Types</h3>
+                        <pre><code class="language-cpp">#include &lt;hydra_address/address_generator.hpp&gt;
+
+// Define custom address types
+enum class CustomAddressType {
+    SMART_CONTRACT = 4,  // Start after the built-in types
+    ORACLE = 5,
+    VALIDATOR = 6
+};
+
+// Convert custom types to built-in types
+hydra::address::AddressType convertType(CustomAddressType type) {
+    switch (type) {
+        case CustomAddressType::SMART_CONTRACT:
+        case CustomAddressType::ORACLE:
+            return hydra::address::AddressType::SERVICE;
+        case CustomAddressType::VALIDATOR:
+            return hydra::address::AddressType::NODE;
+        default:
+            return hydra::address::AddressType::USER;
+    }
+}
+
+// Generate an address with a custom type
+void generateCustomAddress(const std::vector&lt;uint8_t&gt;& public_key, CustomAddressType type) {
+    hydra::address::AddressGenerator address_gen;
+    
+    auto address = address_gen.generateCompressedAddress(
+        public_key,
+        convertType(type)
+    );
+    
+    // Store the custom type in your application's database
+    storeAddressType(address.toString(), static_cast&lt;int&gt;(type));
+    
+    std::cout << "Generated address: " << address.toString() << std::endl;
+}</code></pre>
+                        <p>
+                            For more advanced usage scenarios, see the <a href="../advanced_usage.html">Advanced Usage</a> guide.
+                        </p>
+                    </section>
+
+                    <section id="api-reference">
+                        <h2>API Reference</h2>
+                        <h3>Classes</h3>
+                        <ul>
+                            <li><code>hydra::address::Address</code>: Represents a cryptographic address</li>
+                            <li><code>hydra::address::AddressGenerator</code>: Generates and verifies addresses</li>
+                            <li><code>hydra::address::Vector</code>: Represents a vector in the Layered Matrix and Vector System</li>
+                            <li><code>hydra::address::LayeredMatrix</code>: Represents a layered matrix in the LMVS</li>
+                            <li><code>hydra::address::VectorCompression</code>: Compresses and decompresses vectors</li>
+                        </ul>
+                        <h3>Enums</h3>
+                        <ul>
+                            <li><code>hydra::address::AddressType</code>: Types of addresses (USER, NODE, RESOURCE, SERVICE)</li>
+                            <li><code>hydra::address::AddressFormat</code>: Formats of addresses (STANDARD, GEOHASHED, QUANTUM_PROOF, COMPRESSED)</li>
+                            <li><code>hydra::address::CompressionMethod</code>: Methods for compressing addresses (NONE, RLE, HUFFMAN, HYBRID)</li>
+                        </ul>
+                        <h3>Structs</h3>
+                        <ul>
+                            <li><code>hydra::address::Coordinates</code>: Represents geographic coordinates (latitude, longitude, altitude)</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Hydra SDK Team. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

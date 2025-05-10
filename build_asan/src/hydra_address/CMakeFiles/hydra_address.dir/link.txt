@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libhydra_address.a CMakeFiles/hydra_address.dir/address_generator.cpp.o CMakeFiles/hydra_address.dir/geohash.cpp.o CMakeFiles/hydra_address.dir/layered_matrix.cpp.o CMakeFiles/hydra_address.dir/vector_compression.cpp.o CMakeFiles/hydra_address.dir/lmvs_address_generator.cpp.o CMakeFiles/hydra_address.dir/thread_safe_address_generator.cpp.o CMakeFiles/hydra_address.dir/thread_safe_vector_compression.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libhydra_address.a

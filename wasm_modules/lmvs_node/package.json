@@ -1,0 +1,27 @@
+{
+  "name": "hydra-lmvs",
+  "version": "1.0.0",
+  "description": "Layered Matrix Vector System for Hydra SDK",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "test": "jest"
+  },
+  "keywords": [
+    "hydra",
+    "lmvs",
+    "matrix",
+    "vector",
+    "wasm"
+  ],
+  "author": "Hydra SDK Team",
+  "license": "MIT",
+  "dependencies": {
+    "big-integer": "^1.6.51"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "jest": "^29.5.0"
+  }
+}

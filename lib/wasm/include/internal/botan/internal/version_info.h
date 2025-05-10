@@ -1,0 +1,11 @@
+#ifndef BOTAN_VERSION_INFO_H_
+#define BOTAN_VERSION_INFO_H_
+
+#define BOTAN_FULL_VERSION_STRING "Botan 3.8.0 (unreleased, revision git:a541e62f93960787726bb9b974e2f1cda00aa57f)"
+
+#define BOTAN_SHORT_VERSION_STRING "3.8.0"
+
+#define BOTAN_VC_REVISION "git:a541e62f93960787726bb9b974e2f1cda00aa57f"
+
+
+#endif
